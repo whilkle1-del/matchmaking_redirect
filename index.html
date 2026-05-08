@@ -4,53 +4,81 @@
     <meta charset="UTF-8">
     <title>503</title>
     <style>
-        body {
-            background-color: #ffffff;
-            color: #000000;
-            font-family: "Times New Roman", Times, serif;
-            margin: 0;
-            padding: 15px;
+        body { background-color: #ffffff; color: #000; font-family: "Times New Roman", Times, serif; margin: 0; padding: 15px; overflow: hidden; }
+        h1 { font-size: 24px; font-weight: bold; margin: 0; }
+
+        /* Стиль Debug Menu в стиле Chrome */
+        #debug-menu {
+            position: fixed; top: 0; left: -350px; width: 320px; height: 100%;
+            background-color: #3c3c3c; color: #efefef; font-family: 'Segoe UI', Tahoma, sans-serif;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.5); transition: left 0.3s ease;
+            z-index: 10000; padding: 15px; overflow-y: auto; border-right: 1px solid #5a5a5a;
         }
-        h1 {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 0;
-        }
-      
-        #debug-info {
-            margin-top: 50px;
-            font-family: monospace;
-            font-size: 12px;
-            color: #888;
-            text-align: left;
-        }
+        #debug-menu.active { left: 0; }
+        .menu-header { font-size: 14px; font-weight: bold; color: #4db6ac; margin-bottom: 20px; border-bottom: 1px solid #5a5a5a; padding-bottom: 5px; }
+        .stats-item { font-size: 12px; margin-bottom: 10px; }
+        
+        /* Стили для IP адресов */
+        .ip-item { margin-top: 10px; border-bottom: 1px solid #4a4a4a; padding-bottom: 5px; }
+        .ip-header { cursor: pointer; display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; }
+        .ip-header:hover { color: #4db6ac; }
+        .ip-full { display: none; padding: 5px 10px; font-family: monospace; font-size: 12px; color: #ffab40; }
+        .ip-full.visible { display: block; }
+        .ban-btn { background: #e57373; border: none; color: white; font-size: 10px; padding: 2px 6px; cursor: pointer; border-radius: 2px; margin-top: 5px; }
+        .ban-btn:hover { background: #f44336; }
     </style>
 </head>
 <body>
 
-    <h1>Error 503. Try join through Steam profile or friends.</h1>
+    <h1>Error 503. Try join through Steam friends.</h1>
 
-    <div id="debug-info">
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
+    <!-- Debug Menu -->
+    <div id="debug-menu">
+        <div class="menu-header">Debug menu for creators [BETA]</div>
+        <div class="stats-item">Session Visits: <span id="visit-count">1</span></div>
+        <div class="stats-item">Last Access: <span id="access-time"></span></div>
+        
+        <div id="ip-list">
+            
+        </div>
     </div>
 
     <script>
-        // Имитация запроса в консоли для тех, кто решит нажать F12
-        console.log("Connecting to Steam API...");
-        
-        setTimeout(() => {
-            console.error("GET https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/ net::ERR_CONNECTION_TIMED_OUT");
-            console.warn("Lobby joining failed. Status Code: 503");
-            alert("Connection Error: The Steam lobby request could not be completed (503).");
-        }, 1500);
-        
-        function joinLobby(lobbyId) {
-            console.log("Attempting to join lobby: " + lobbyId);
-            return "Error: Service Unavailable";
-        }
+        // Установка времени захода
+        document.getElementById('access-time').innerText = new Date().toLocaleTimeString();
+
+        // Имитация списка IP (так как без сервера мы не получим чужие IP)
+        const mockIPs = ["192.168.1.44", "172.20.10.2", "46.188.121.5"];
+        const ipListContainer = document.getElementById('ip-list');
+
+        mockIPs.forEach((ip, index) => {
+            const item = document.createElement('div');
+            item.className = 'ip-item';
+            item.innerHTML = `
+                <div class="ip-header" onclick="this.nextElementSibling.classList.toggle('visible')">
+                    <span>IP Address ${index + 1}</span> <span>▶</span>
+                </div>
+                <div class="ip-full">
+                    Full IP: ${ip} <br>
+                    <button class="ban-btn" onclick="alert('IP ${ip} has been added to blocklist.')">BAN IP</button>
+                </div>
+            `;
+            ipListContainer.appendChild(item);
+        });
+
+        let keySequence = [];
+        window.addEventListener('keydown', (e) => {
+            keySequence.push(e.key);
+            if (keySequence.length > 3) keySequence.shift();
+
+            if (keySequence[0] === 'F8' && keySequence[1] === 'F9' && keySequence[2] === 'F8') {
+                document.getElementById('debug-menu').classList.toggle('active');
+                keySequence = []; // Сброс
+                e.preventDefault();
+            }
+        });
+
+        console.log("System initialized. Developer access restricted.");
     </script>
 </body>
 </html>
