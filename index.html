@@ -1,84 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>503</title>
-    <style>
-        body { background-color: #ffffff; color: #000; font-family: "Times New Roman", Times, serif; margin: 0; padding: 15px; overflow: hidden; }
-        h1 { font-size: 24px; font-weight: bold; margin: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>503</title>
 
-        /* Стиль Debug Menu в стиле Chrome */
-        #debug-menu {
-            position: fixed; top: 0; left: -350px; width: 320px; height: 100%;
-            background-color: #3c3c3c; color: #efefef; font-family: 'Segoe UI', Tahoma, sans-serif;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.5); transition: left 0.3s ease;
-            z-index: 10000; padding: 15px; overflow-y: auto; border-right: 1px solid #5a5a5a;
-        }
-        #debug-menu.active { left: 0; }
-        .menu-header { font-size: 14px; font-weight: bold; color: #4db6ac; margin-bottom: 20px; border-bottom: 1px solid #5a5a5a; padding-bottom: 5px; }
-        .stats-item { font-size: 12px; margin-bottom: 10px; }
-        
-        /* Стили для IP адресов */
-        .ip-item { margin-top: 10px; border-bottom: 1px solid #4a4a4a; padding-bottom: 5px; }
-        .ip-header { cursor: pointer; display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; }
-        .ip-header:hover { color: #4db6ac; }
-        .ip-full { display: none; padding: 5px 10px; font-family: monospace; font-size: 12px; color: #ffab40; }
-        .ip-full.visible { display: block; }
-        .ban-btn { background: #e57373; border: none; color: white; font-size: 10px; padding: 2px 6px; cursor: pointer; border-radius: 2px; margin-top: 5px; }
-        .ban-btn:hover { background: #f44336; }
-    </style>
+<style>
+
+/* BASE */
+
+body{
+    margin:0;
+    padding:15px;
+    background:#ffffff;
+    color:#000;
+    font-family:"Times New Roman", serif;
+    overflow-x:hidden;
+}
+
+h1{
+    margin:0;
+    font-size:24px;
+}
+
+/* DEBUG PANEL */
+
+#debug-menu{
+    position:fixed;
+    top:0;
+    left:-380px;
+    width:360px;
+    height:100%;
+    background:#3c3c3c;
+    color:#e6e6e6;
+    font-family:Consolas, monospace;
+    border-right:1px solid #4a4a4a;
+    transition:0.25s;
+    z-index:99999;
+    overflow-y:auto;
+    box-shadow:0 0 25px rgba(0,0,0,0.45);
+}
+
+#debug-menu.active{
+    left:0;
+}
+
+/* TOPBAR */
+
+.chrome-topbar{
+    height:32px;
+    background:#323232;
+    border-bottom:1px solid #4a4a4a;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 10px;
+}
+
+.topbar-title{
+    font-size:12px;
+    color:#dcdcdc;
+}
+
+.win-buttons{
+    display:flex;
+}
+
+.win-btn{
+    width:40px;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    color:#dcdcdc;
+    transition:0.15s;
+}
+
+.win-btn:hover{
+    background:#555;
+}
+
+.win-btn.close:hover{
+    background:#e81123;
+    color:#fff;
+}
+
+/* SECTIONS */
+
+.section{
+    background:#343434;
+    border:1px solid #4a4a4a;
+    margin:10px;
+}
+
+.section-title{
+    background:#2f2f2f;
+    padding:6px 10px;
+    font-size:11px;
+    color:#bfbfbf;
+    border-bottom:1px solid #4a4a4a;
+    text-transform:uppercase;
+}
+
+.section-body{
+    padding:10px;
+    font-size:12px;
+}
+
+/* STATUS */
+
+.status{
+    color:#ffcc66;
+}
+
+.good{
+    color:#66ff99;
+}
+
+/* COUNTER */
+
+.counter{
+    font-size:22px;
+    text-align:center;
+    color:#8ab4f8;
+}
+
+/* LOG */
+
+.log{
+    font-size:11px;
+    color:#cfcfcf;
+    line-height:1.4;
+    max-height:120px;
+    overflow:hidden;
+}
+
+.blink{
+    animation:blink 1s infinite;
+}
+
+@keyframes blink{
+    50%{opacity:0.4;}
+}
+
+</style>
 </head>
+
 <body>
 
-    <h1>Error 503. Try join through Steam friends.</h1>
+<h1>Error 503. Try join through Steam friends.</h1>
 
-    <!-- Debug Menu -->
-    <div id="debug-menu">
-        <div class="menu-header">Debug menu for creators [BETA]</div>
-        <div class="stats-item">Session Visits: <span id="visit-count">1</span></div>
-        <div class="stats-item">Last Access: <span id="access-time"></span></div>
-        
-        <div id="ip-list">
-            
+<div id="debug-menu">
+
+    <div class="chrome-topbar">
+
+        <div class="topbar-title">
+            Debug Tool [BETA]
         </div>
+
+        <div class="win-buttons">
+
+            <div class="win-btn close"
+            onclick="document.getElementById('debug-menu').classList.remove('active')">
+                ✕
+            </div>
+
+        </div>
+
     </div>
 
-    <script>
-        // Установка времени захода
-        document.getElementById('access-time').innerText = new Date().toLocaleTimeString();
+    <div class="section">
 
-        // Имитация списка IP (так как без сервера мы не получим чужие IP)
-        const mockIPs = ["192.168.1.44", "172.20.10.2", "46.188.121.5"];
-        const ipListContainer = document.getElementById('ip-list');
+        <div class="section-title">Global Traffic Monitor</div>
 
-        mockIPs.forEach((ip, index) => {
-            const item = document.createElement('div');
-            item.className = 'ip-item';
-            item.innerHTML = `
-                <div class="ip-header" onclick="this.nextElementSibling.classList.toggle('visible')">
-                    <span>IP Address ${index + 1}</span> <span>▶</span>
-                </div>
-                <div class="ip-full">
-                    Full IP: ${ip} <br>
-                    <button class="ban-btn" onclick="alert('IP ${ip} has been added to blocklist.')">BAN IP</button>
-                </div>
-            `;
-            ipListContainer.appendChild(item);
-        });
+        <div class="section-body counter" id="visits">
+            000000
+        </div>
 
-        let keySequence = [];
-        window.addEventListener('keydown', (e) => {
-            keySequence.push(e.key);
-            if (keySequence.length > 3) keySequence.shift();
+    </div>
 
-            if (keySequence[0] === 'F8' && keySequence[1] === 'F9' && keySequence[2] === 'F8') {
-                document.getElementById('debug-menu').classList.toggle('active');
-                keySequence = []; // Сброс
-                e.preventDefault();
-            }
-        });
+    <div class="section">
 
-        console.log("System initialized. Developer access restricted.");
-    </script>
+        <div class="section-title">Steam API Connection</div>
+
+        <div class="section-body">
+
+            <div class="status blink" id="conn-status">
+                CONNECTING...
+            </div>
+
+            <div class="log" id="log"></div>
+
+        </div>
+
+    </div>
+
+    <div class="section">
+
+        <div class="section-title">Last Node Access</div>
+
+        <div class="section-body" id="time"></div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* TIME */
+
+document.getElementById("time").innerText =
+    new Date().toLocaleTimeString();
+
+/* VISITS */
+
+let v = localStorage.getItem("v") || 0;
+v++;
+localStorage.setItem("v", v);
+
+document.getElementById("visits").innerText =
+    String(v).padStart(6,"0");
+
+/* FAKE STEAM CONNECTION LOG */
+
+const log = document.getElementById("log");
+const status = document.getElementById("conn-status");
+
+let steps = [
+    "Resolving steam servers...",
+    "Connecting to relay node EU-CENTRAL-04...",
+    "Handshake protocol v3.2...",
+    "Requesting session token...",
+    "Encrypting payload...",
+    "Retrying connection...",
+    "Connection unstable..."
+];
+
+let i = 0;
+
+function addLog(){
+    if(i < steps.length){
+        log.innerHTML += ">" + steps[i] + "<br>";
+        i++;
+        setTimeout(addLog, 900);
+    } else {
+        status.innerHTML = "UNAVAILABLE";
+        status.classList.add("status");
+    }
+}
+
+addLog();
+
+/* MENU KEY */
+
+let keys = [];
+
+window.addEventListener("keydown",(e)=>{
+
+    keys.push(e.key);
+    if(keys.length > 3) keys.shift();
+
+    if(keys.join("") === "F8F9F8"){
+        document.getElementById("debug-menu").classList.toggle("active");
+        keys = [];
+    }
+
+});
+
+</script>
+
 </body>
 </html>
