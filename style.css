@@ -1,0 +1,49 @@
+/* WINDOWS 10 TOPBAR */
+
+.chrome-topbar{
+    height:32px;
+    background:#202124;
+    border-bottom:1px solid #3c4043;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-left:10px;
+    user-select:none;
+}
+
+/* TITLE */
+
+.topbar-title{
+    font-size:12px;
+    color:#e8eaed;
+}
+
+/* WINDOWS BUTTONS */
+
+.win-buttons{
+    display:flex;
+    height:100%;
+}
+
+.win-btn{
+    width:46px;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#e8eaed;
+    font-size:10px;
+    cursor:pointer;
+    transition:0.15s;
+}
+
+.win-btn:hover{
+    background:#3c4043;
+}
+
+/* CLOSE BUTTON */
+
+.win-btn.close:hover{
+    background:#e81123;
+    color:white;
+}
