@@ -16,7 +16,7 @@
             font-weight: bold;
             margin: 0;
         }
-        /* Скрытый технический лог на странице */
+      
         #debug-info {
             margin-top: 50px;
             font-family: monospace;
@@ -28,7 +28,7 @@
 </head>
 <body>
 
-    <h1>Error 503. Try join through Steam friends.</h1>
+    <h1>Error 503. Try join through Steam profile or friends.</h1>
 
     <div id="debug-info">
         <p></p>
@@ -46,8 +46,7 @@
             console.warn("Lobby joining failed. Status Code: 503");
             alert("Connection Error: The Steam lobby request could not be completed (503).");
         }, 1500);
-
-        // Функция-заглушка, которую "как бы" вызывает кнопка
+        
         function joinLobby(lobbyId) {
             console.log("Attempting to join lobby: " + lobbyId);
             return "Error: Service Unavailable";
