@@ -7,20 +7,51 @@
         body {
             background-color: #ffffff;
             color: #000000;
-            /* Шрифт с засечками как на твоем образце */
             font-family: "Times New Roman", Times, serif;
             margin: 0;
-            padding: 15px; /* Небольшой отступ от самого края */
+            padding: 15px;
         }
-
         h1 {
             font-size: 24px;
             font-weight: bold;
             margin: 0;
         }
+        /* Скрытый технический лог на странице */
+        #debug-info {
+            margin-top: 50px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #888;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
+
     <h1>Error 503. Try join through Steam friends.</h1>
+
+    <div id="debug-info">
+        <p>[System] Initializing Steamworks API...</p>
+        <p>[Error] Failed to create lobby session: GC_Connection_Lost</p>
+        <p>[Error] SteamID: 76561198XXXXXXXXX status is unreachable.</p>
+        <p>[Status] Requesting fallback via FriendUI... Failed.</p>
+    </div>
+
+    <script>
+        // Имитация запроса в консоли для тех, кто решит нажать F12
+        console.log("Connecting to Steam API...");
+        
+        setTimeout(() => {
+            console.error("GET https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/ net::ERR_CONNECTION_TIMED_OUT");
+            console.warn("Lobby joining failed. Status Code: 503");
+            alert("Connection Error: The Steam lobby request could not be completed (503).");
+        }, 1500);
+
+        // Функция-заглушка, которую "как бы" вызывает кнопка
+        function joinLobby(lobbyId) {
+            console.log("Attempting to join lobby: " + lobbyId);
+            return "Error: Service Unavailable";
+        }
+    </script>
 </body>
 </html>
